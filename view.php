@@ -158,7 +158,7 @@ session_start();
                             </tr>";
                         } elseif (is_dir($file)) {
                             echo "
-                            <td><i class=' material-icons text-secondary'>folder_open </i><a href='$file' class='fo'> $file</a></td>  
+                            <td><i class=' material-icons text-secondary'>folder_open </i><a href='view_folder.php?name=$file' class='fo'> $file</a></td>  
                             <td>Folder</td>
                             <td>$fDate</td>
                             <td>
