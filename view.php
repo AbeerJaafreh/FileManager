@@ -1,5 +1,8 @@
 <?php
+
 session_start();
+$userName = $_SESSION['username'];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,13 +15,12 @@ session_start();
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title>File Managment </title>
-
 </head>
 
 <body>
     <nav class=" navbar navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">File Managment System </a>
+            <a class="navbar-brand" href="view.php">File Managment System </a>
             <form class="form-inline my-2 my-lg-0 text-secondary">
                 <i class="material-icons">logout</i><a class="a text-secondary" href="logout.php">logout</a>
                 <i class="material-icons">person_outline</i><a class="a text-secondary" href="">Admin </a>
@@ -108,8 +110,19 @@ session_start();
 
 
     <?php
-    $path = getcwd();
-    $myDirectory = opendir($path) or die("Unable to open file ");
+    if (isset($_GET['dir'])) {
+        $path = $_GET['dir'];
+    } else {
+        $path =  'folder/' . $userName;
+    }
+
+    $_SESSION['path'] = $path;
+    if (!file_exists($path)) {
+        mkdir($path, 0777);
+    }
+
+    $myDirectory = scandir($path) or die("Unable to open file ");
+
     ?>
     <div class="bg-light">
         <div class="container bg-light">
@@ -131,66 +144,58 @@ session_start();
                 </thead>
                 <tbody>
                     <?php
-                    while ($file = readdir($myDirectory)) {
-                        if ($file == '.' || $file == '..' || pathinfo($file, PATHINFO_EXTENSION) == "php" || pathinfo($file, PATHINFO_EXTENSION) == "xml")
-                            continue;
-                        $fDate = date("Y/m/d H:i A", filemtime($file));
-                        $path = pathinfo($file, PATHINFO_EXTENSION);
-                        $fType = filetype($file) . " " . pathinfo($file, PATHINFO_EXTENSION);
-                        echo "
-                    <tr>
-                    ";
-                        if (!is_dir($file) && pathinfo($file, PATHINFO_EXTENSION) == "txt" || pathinfo($file, PATHINFO_EXTENSION) == "pdf") {
+                    foreach ($myDirectory as $value) {
+                        if ($value !== "." && $value !== "..") {
+                            $file = $path . '/' . $value;
+
                             echo "
-                            <td><a href='$file'>$file</a> <p class='text-secondary'><i> $file</i><p></td>  
-                            <td>TEXT/$path</td>
-                            <td>$fDate</td>
-                            <td>
-                            <a href='$file'  target='_blank' class='border-0 text-success' download><i class='ii material-icons'>remove_red_eye</i></a> 
-                            <a href='delete_files.php?name=$file' class='border-0 text-danger'><i class='ii material-icons'>delete_forever</i></a>
-                            </td>
+                            <tr>
+                            <td>";
+                            if (is_dir($file)) {
+                                echo "<a href='view.php?dir=" . $path . '/' . $value . "'>$value</a> <p class='text-secondary'><i>" . $value . "</i><p></td>  
+                            <td>";
+                            } else {
+                                echo '<a href="display.php?display=' . $path . '/' . $value . '" target="_blank">' . $value . '</a> <p class="text-secondary"><i>' . $value . '</i><p></td>  
+                            <td>';
+                            }
+
+                            echo get_Type($path . '/' . $value);
+                            echo "</td><td>";
+                            echo get_Time($path . '/' . $value);
+                            echo "</td><td>";
+                            if (is_dir($file)) {
+                                echo '<a href="delete_files.php?name=' . $path . '/' . $value . '" class="border-0 text-danger"><i class="ii material-icons">delete_forever</i></a>
+                            <a href="view.php?dir=' . $path . '/' . $value .  '" class="border-0 text-success"><i class="ii material-icons">remove_red_eye</i></a>';
+                            } else {
+                                echo '<a href="delete_files.php?name=' . $path . '/' . $value . '" class="border-0 text-danger"><i class="ii material-icons">delete_forever</i></a>
+                               <a  href="display.php?display=' . $path . '/' . $value . '" target="_blank"  class="border-0 text-success"><i class="ii material-icons">remove_red_eye</i></a> ';
+                            }
+
+                            echo "</td>
                             <td>
                             <label class='containerCheck'>
                                 <input type='checkbox' > 
                                 <span class='checkmark'></span>
-                            </label> 
-                            </td>
-                            </tr>";
-                        } elseif (is_dir($file)) {
-                            echo "
-                            <td><i class=' material-icons text-secondary'>folder_open </i><a href='view_folder.php?name=$file' class='fo'> $file</a></td>  
-                            <td>Folder</td>
-                            <td>$fDate</td>
-                            <td>
-                            <a href='view_folder.php?name=$file' target='_blank' class='border-0 text-success'><i class='ii material-icons'>remove_red_eye</i></a> 
-                            <a href='delete_files.php?name=$file' class='border-0 text-danger'><i class='ii material-icons'>delete_forever</i></a>
-                            </td>
-                            <td>
-                            <label class='containerCheck'>
-                                <input type='checkbox' > 
-                                <span class='checkmark'></span>
-                            </label> 
-                            </td>
-                            </tr>";
-                        } else {
-                            echo "
-                            <td><a href='$file'>$file</a> <p class='text-secondary'><i> $file</i><p></td>  
-                            <td>Image/$path</td>
-                            <td>$fDate</td>
-                            <td>                        
-                            <a href='$file' target='_blank'  class='border-0 text-success' download><i class='ii material-icons'>remove_red_eye</i></a> 
-                            <a href='delete_files.php?name=$file' class='border-0 text-danger'><i class='ii material-icons'>delete_forever</i></a>
-                            <td>
-                            <label class='containerCheck'>
-                                <input type='checkbox' > 
-                                <span class='checkmark'></span>
-                            </label> 
-                            </td>
-                            </td>
+                            </label> </td>
                             </tr>";
                         }
                     }
-                    closedir($myDirectory);
+                    function get_Time($file)
+                    {
+                        return date("Y/m/d H:i A", filemtime($file));
+                    }
+                    function get_Type($file)
+                    {
+                        if (!is_dir($file) && pathinfo($file, PATHINFO_EXTENSION) == "txt" || pathinfo($file, PATHINFO_EXTENSION) == "pdf") {
+                            $filepath = pathinfo($file, PATHINFO_EXTENSION);
+                            return "TEXT" . $filepath;
+                        } elseif (is_dir($file)) {
+                            return "Folder";
+                        } else {
+                            $fType = filetype($file) . " " . pathinfo($file, PATHINFO_EXTENSION);
+                            return "Image/ " . $fType;
+                        }
+                    }
 
                     ?>
                 </tbody>

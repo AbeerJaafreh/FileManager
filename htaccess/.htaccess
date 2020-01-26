@@ -1,0 +1,4 @@
+
+ReWriteEngine On
+
+RewriteRule ^profile/([^/\.]+)/?$ /view.php?dir=$1 [L]

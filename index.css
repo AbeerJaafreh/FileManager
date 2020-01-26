@@ -1,0 +1,82 @@
+ .sign {
+            color: white;
+            font-family: 'Arial Narrow Bold', sans-serif;
+            display: grid;
+            grid-template-rows: 2fr 2fr;
+            grid-gap: 5em;
+            padding: 50px;
+
+        }
+
+        body {
+            display: grid;
+            grid-template-columns: 4fr 8fr;
+            padding: 5% 20% 5%;
+        }
+
+        body,
+        html {
+            height: 100%;
+        }
+
+        p {
+            padding-top: 5px;
+        }
+
+        .signin {
+            padding-top: 5em;
+        }
+
+        #login {
+            display: none;
+        }
+
+        .innerDiv {
+            margin: 10%;
+        }
+
+        form {
+            padding: 10%;
+        }
+
+        .w3-input {
+            padding: 0px;
+            padding-bottom: 0px;
+            margin-top: -6px;
+
+
+        }
+
+        label {
+            padding-top: 28px;
+            font-family: 'Raleway', sans-serif;
+
+        }
+
+        .button {
+            padding: 0px;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-bottom: 3px;
+            border-style: none;
+        }
+
+        .form-check-input {
+            position: relative
+        }
+
+        .btn-success {
+            color: #fff;
+            background-color: green;
+
+        }
+
+        label {
+            color: black;
+
+        }
+
+        span {
+            font-weight: lighter;
+            font-stretch: ultra-condensed;
+        }

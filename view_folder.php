@@ -19,7 +19,7 @@ $dir_path = $file_name . "/";
 </head>
 
 <body>
-    <h3> <center> <?php echo $file_name ?></center></h3>
+    <h3><?php echo $file_name ?></h3>
     <div class="bg-light">
         <div class="container bg-light">
             <table class="table table-striped">
